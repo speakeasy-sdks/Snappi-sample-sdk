@@ -1,0 +1,401 @@
+---
+swagger: "2.0"
+info:
+  title: Snappi - MerchantBNPL.Api
+  description: Snappi - MerchantBNPL.Api
+  version: "1.0"
+  x-ibm-name: natechmerchantbnplapi
+paths:
+  /basket:
+    options:
+      tags:
+      - Basket
+      operationId: BasketOptionsBasket
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: The allowed HTTP methods.
+        500:
+          description: The MIME type in the Accept HTTP header is not acceptable.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+    get:
+      tags:
+      - Basket
+      operationId: BasketGetBasketById
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: basketId
+        type: integer
+        format: int32
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: The basket with the given id.
+          schema:
+            $ref: '#/definitions/Basket'
+        400:
+          description: BasketId cannot be equal or less than 0.
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        404:
+          description: The basket with the given id was not found.
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: The MIME type in the Accept HTTP header is not acceptable.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+    post:
+      tags:
+      - Basket
+      operationId: BasketPostBasket
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/Basket'
+      responses:
+        201:
+          description: The created basket.
+          schema:
+            $ref: '#/definitions/BasketPostResponse'
+        400:
+          description: 'Invalid request parameters. / Basket''s merchant was not found.
+            / Basket value does not comply with merchant''s BNPL limits./ Error: response
+            status is 400.'
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+  /postbasketplainqr:
+    post:
+      tags:
+      - Basket
+      operationId: BasketPostBasketPlainQR
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/Basket'
+      responses:
+        201:
+          description: The created basket with the QR code.
+          schema:
+            $ref: '#/definitions/PostBasketPlainQRSuccess'
+        400:
+          description: 'Invalid request parameters. / Basket''s merchant was not found.
+            / Basket value does not comply with merchant''s BNPL limits. / Error:
+            response status is 400.'
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+  /merchant:
+    options:
+      tags:
+      - Merchant
+      operationId: MerchantOptionsCheckBasketEligibilityForBNPL
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: The allowed HTTP methods.
+        500:
+          description: The MIME type in the Accept HTTP header is not acceptable.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+  /merchant/checkbasketeligibilityforbnpl:
+    get:
+      tags:
+      - Merchant
+      operationId: MerchantGetCheckBasketEligibilityForBNPL
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: merchantId
+        type: integer
+        format: int32
+      - in: query
+        name: basketValue
+        type: number
+        format: double
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: Returns check of basket eligibility for BNPL.
+          schema:
+            $ref: '#/definitions/GetCheckBasketEligibilityForBNPLSuccess'
+        400:
+          description: No merchant could be found. / MerchantId cannot be less than
+            zero. BasketValue cannot be less than zero
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+  /termsofservice:
+    options:
+      tags:
+      - TermsOfService
+      operationId: TermsOfServiceOptionsTermsOfService
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: The allowed HTTP methods.
+        500:
+          description: The MIME type in the Accept HTTP header is not acceptable.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+  /termsofservice/active:
+    get:
+      tags:
+      - TermsOfService
+      operationId: TermsOfServiceGetActiveTermsOfService
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: Returns the currently active terms of service.
+          schema:
+            $ref: '#/definitions/TermsOfService'
+        404:
+          description: Active terms of service not found.
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: Internal Server Error.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+    head:
+      tags:
+      - TermsOfService
+      operationId: TermsOfServiceHeadActiveTermsOfService
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: api-version
+        description: The requested API version
+        type: string
+        default: "1.0"
+      responses:
+        200:
+          description: Returns the currently active terms of service.
+          schema:
+            $ref: '#/definitions/TermsOfService'
+        404:
+          description: Active terms of service not found.
+          schema:
+            $ref: '#/definitions/ErrorResultModel'
+        500:
+          description: Internal Server Error.
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+definitions:
+  Basket:
+    type: object
+    properties:
+      id:
+        format: int32
+        type: integer
+      basketValue:
+        format: double
+        type: number
+      merchantId:
+        format: int32
+        type: integer
+      merchantName:
+        type: string
+      requestId:
+        format: uuid
+        type: string
+      orderIdentifier:
+        type: string
+      bnplAmount:
+        format: double
+        type: number
+      basketProducts:
+        type: array
+        items:
+          $ref: '#/definitions/BasketProduct'
+      Merchant Data:
+        type: string
+  BasketPostResponse:
+    type: object
+    properties:
+      requestId:
+        format: uuid
+        type: string
+      basketId:
+        format: int32
+        type: integer
+      qrCodeData:
+        format: byte
+        type: string
+  BasketProduct:
+    type: object
+    properties:
+      Product Number:
+        type: string
+      name:
+        type: string
+      quantity:
+        format: double
+        type: number
+      Quantity Units:
+        type: string
+      Unit Price:
+        format: double
+        type: number
+      Tax Rate:
+        format: double
+        type: number
+      Total Amount:
+        format: double
+        type: number
+      Total Discount Amount:
+        format: double
+        type: number
+      Total Tax Amount:
+        format: double
+        type: number
+      Product URL:
+        type: string
+      Product Image URL:
+        type: string
+  ErrorResultModel:
+    type: object
+    properties:
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ValidationError'
+  GetCheckBasketEligibilityForBNPLSuccess:
+    type: object
+    properties:
+      isBNPLEligible:
+        type: boolean
+      listOfMonthlyInstallments:
+        type: array
+        items:
+          $ref: '#/definitions/MonthlyInstallment'
+  MonthlyInstallment:
+    type: object
+    properties:
+      paymentDay:
+        format: date-time
+        type: string
+      paymentAmount:
+        format: double
+        type: number
+  PostBasketPlainQRSuccess:
+    type: object
+    properties:
+      basketPostResponse:
+        $ref: '#/definitions/BasketPostResponse'
+  ProblemDetails:
+    type: object
+    properties:
+      type:
+        type: string
+      title:
+        type: string
+      status:
+        format: int32
+        type: integer
+      detail:
+        type: string
+      instance:
+        type: string
+    additionalProperties: []
+  TermsOfService:
+    type: object
+    properties:
+      text:
+        type: string
+      version:
+        format: int32
+        type: integer
+      isActive:
+        type: boolean
+  ValidationError:
+    type: object
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+x-ibm-configuration:
+  enforced: true
+  testable: true
+  phase: realized
+basePath: /
+x-ibm-endpoints:
+- endpointUrl: https://api.eu-gb.apiconnect.appdomain.cloud/adminnatechgr-dev/snappi
+  type:
+  - production
+  - development
+...
